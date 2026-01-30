@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "baseUrl": ".",
+    "types": ["jest", "node"],
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "@prisma/client": ["node_modules/@prisma/client"],
+      "@prisma/client/*": ["node_modules/@prisma/client/*"],
+      "supertest": ["node_modules/supertest"],
+      "supertest/*": ["node_modules/supertest/*"]
+    }
+  },
+  "include": ["src", "../test/**/*.ts", "../test/**/*.d.ts", "prisma/seed.ts"]
+}
