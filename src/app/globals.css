@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply transition-colors duration-200;
+}
+
+html {
+  @apply scroll-smooth;
+}
+
+body {
+  @apply bg-bg-primary text-white;
+  font-family: Inter, sans-serif;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border-subtle rounded hover:bg-polygon/50;
+}
+
+/* Custom components */
+.card {
+  @apply rounded-lg border border-border-subtle bg-bg-secondary/50 backdrop-blur-sm;
+}
+
+.card-elevated {
+  @apply card shadow-lg shadow-polygon/10;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-polygon px-4 py-2 font-semibold text-white hover:bg-polygon/90 active:scale-95 transition-all;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border-subtle bg-bg-secondary/50 px-4 py-2 font-semibold text-white hover:bg-bg-tertiary active:scale-95 transition-all;
+}
+
+.btn-success {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-profit px-4 py-2 font-semibold text-white hover:bg-profit/90 active:scale-95 transition-all;
+}
+
+.btn-danger {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-loss px-4 py-2 font-semibold text-white hover:bg-loss/90 active:scale-95 transition-all;
+}
+
+.input-base {
+  @apply w-full rounded-lg border border-border-subtle bg-bg-secondary/50 px-4 py-2 text-white placeholder-gray-500 focus:border-polygon focus:outline-none focus:ring-1 focus:ring-polygon/50;
+}
+
+.text-glow {
+  @apply text-gold drop-shadow-[0_0_8px_rgba(255,215,0,0.5)];
+}
+
+.border-glow {
+  @apply border border-gold shadow-[0_0_10px_rgba(255,215,0,0.3)];
+}
+
+/* Animations */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Gradient backgrounds */
+.gradient-polygon {
+  @apply bg-gradient-to-r from-polygon/20 to-transparent;
+}
+
+.gradient-success {
+  @apply bg-gradient-to-r from-profit/20 to-transparent;
+}
+
+.gradient-danger {
+  @apply bg-gradient-to-r from-loss/20 to-transparent;
+}
+
+/* Glass morphism */
+.glass {
+  @apply rounded-xl border border-white/10 bg-white/5 backdrop-blur-md;
+}
+
+.glass-sm {
+  @apply rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .sidebar-hidden {
+    @apply hidden;
+  }
+}
+
+/* Loading skeleton */
+.skeleton {
+  @apply animate-shimmer rounded bg-gradient-to-r from-bg-secondary to-bg-tertiary;
+}
