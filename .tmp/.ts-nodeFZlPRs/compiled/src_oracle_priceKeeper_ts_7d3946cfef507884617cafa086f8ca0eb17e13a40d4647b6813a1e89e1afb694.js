@@ -1,0 +1,1 @@
+throw new Error("Must use import to load ES Module: E:\\PolyStrike\\backend\\src\\oracle\\priceKeeper.ts");

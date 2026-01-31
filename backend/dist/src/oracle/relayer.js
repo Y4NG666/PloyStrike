@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import { env } from "../config/env.js";
 const ORACLE_ABI = ["function updatePrice(string skinId,uint256 price,bytes signature)"];
-const BETTING_ABI = ["function resolveMatch(string matchId,string winner)"];
 export class OracleRelayer {
     wallet;
     provider;
@@ -31,15 +30,6 @@ export class OracleRelayer {
         }
         const contract = new ethers.Contract(env.oracleAdapterAddress, ORACLE_ABI, this.wallet);
         const tx = await contract.updatePrice(skinId, Math.round(price * 100), signature);
-        const receipt = await tx.wait();
-        return receipt?.hash ?? tx.hash;
-    }
-    async resolveMatch(matchId, winner) {
-        if (!this.wallet || !env.oracleBettingRouterAddress) {
-            throw new Error("Betting router not configured");
-        }
-        const contract = new ethers.Contract(env.oracleBettingRouterAddress, BETTING_ABI, this.wallet);
-        const tx = await contract.resolveMatch(matchId, winner);
         const receipt = await tx.wait();
         return receipt?.hash ?? tx.hash;
     }

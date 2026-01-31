@@ -167,7 +167,12 @@ router.get("/sessions/:id/odds", async (req, res) => {
     where: { sessionId },
     select: { prediction: true, amount: true }
   });
-  const odds = buildOdds(bets);
+  const odds = buildOdds(
+    bets.map((bet) => ({
+      prediction: bet.prediction,
+      amount: Number(bet.amount || 0)
+    }))
+  );
   res.json({ sessionId, odds });
 });
 

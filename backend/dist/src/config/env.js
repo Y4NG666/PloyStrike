@@ -22,9 +22,11 @@ export const env = {
     oraclePrivateKey: getOptionalEnv("ORACLE_PRIVATE_KEY"),
     oracleRpcUrl: getOptionalEnv("ORACLE_RPC_URL"),
     oracleAdapterAddress: getOptionalEnv("ORACLE_ADAPTER_ADDRESS"),
-    oracleBettingRouterAddress: getOptionalEnv("ORACLE_BETTING_ROUTER_ADDRESS"),
     oracleIntervalMs: Number(process.env.ORACLE_INTERVAL_MS ?? "120000"),
     oracleChallengeMs: Number(process.env.ORACLE_CHALLENGE_MS ?? "120000"),
     oracleDiffPct: Number(process.env.ORACLE_DIFF_PCT ?? "0.05"),
-    oracleMaxSwingPct: Number(process.env.ORACLE_MAX_SWING_PCT ?? "0.5")
+    oracleMaxSwingPct: Number(process.env.ORACLE_MAX_SWING_PCT ?? "0.5"),
+    unboxIntervalMs: Number(process.env.UNBOX_INTERVAL_MS ?? "10000"),
+    priceKeeperIntervalMs: Number(process.env.PRICE_KEEPER_INTERVAL_MS ?? "30000"),
+    priceOptionPoolAddress: getOptionalEnv("PRICE_OPTION_POOL_ADDRESS")
 };

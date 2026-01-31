@@ -15,7 +15,8 @@
     "scrape": "ts-node src/scrapers/index.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "demo:feeder": "node scripts/demo_price_feeder.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

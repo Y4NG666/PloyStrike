@@ -6,6 +6,7 @@ import { VideoPlayer } from '@/components/live/video-player';
 import { SafeModeBanner } from '@/components/live/safe-mode-banner';
 import { BettingCards } from '@/components/live/betting-cards';
 import { LiveChat } from '@/components/live/live-chat';
+import { BetFlowPanel } from '@/components/live/bet-flow-panel';
 
 export default function LivePage() {
   return (
@@ -32,6 +33,9 @@ export default function LivePage() {
                 </h2>
                 <BettingCards />
               </div>
+
+              {/* Bet Flow Panel */}
+              <BetFlowPanel />
             </div>
 
             {/* Right section: Live Chat (1/3 width on desktop) */}

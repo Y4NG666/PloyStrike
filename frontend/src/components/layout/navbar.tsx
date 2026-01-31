@@ -4,12 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Zap, Menu, X } from 'lucide-react';
+import { Ticker } from './ticker';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
-  { label: '交易', href: '/trade' },
-  { label: '直播', href: '/live' },
+  { label: '饰品预测', href: '/trade' },
+  { label: '欧皇开箱', href: '/live' },
 ];
 
 export function Navbar() {
@@ -109,6 +110,7 @@ export function Navbar() {
           </nav>
         </div>
       )}
+      <Ticker />
     </header>
   );
 }

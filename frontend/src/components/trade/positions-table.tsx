@@ -1,13 +1,90 @@
 'use client';
 
-import { POSITIONS } from '@/lib/mock-data';
+import { useEffect, useState } from 'react';
+import { fetchJson } from '@/lib/api';
 import { X, TrendingUp, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+type UnboxSession = {
+  id: number;
+  createdAt: string;
+};
+
+type UnboxBet = {
+  id: number;
+  userAddress: string;
+  prediction: string;
+  amount: number;
+  payout: number | null;
+};
+
+type PositionRow = {
+  id: number;
+  asset: string;
+  direction: 'LONG' | 'SHORT';
+  entryPrice: number;
+  markPrice: number;
+  pnl: number;
+  pnlPercent: number;
+  status: string;
+  leverage: string;
+};
+
 export function PositionsTable() {
+  const [positions, setPositions] = useState<PositionRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchJson<UnboxSession[]>('/api/unbox/sessions')
+      .then((sessions) => {
+        if (!mounted) return null;
+        const latest = sessions[0];
+        if (!latest) return null;
+        return fetchJson<{ bets: UnboxBet[] }>(`/api/unbox/sessions/${latest.id}`);
+      })
+      .then((session) => {
+        if (!mounted) return;
+        const bets = session?.bets ?? [];
+        const mapped = bets.map((bet) => {
+          const entryPrice = Number(bet.amount);
+          const markPrice = bet.payout === null ? entryPrice : Number(bet.payout);
+          const pnl = markPrice - entryPrice;
+          const pnlPercent = entryPrice ? (pnl / entryPrice) * 100 : 0;
+          return {
+            id: bet.id,
+            asset: `Unbox ${bet.prediction}`,
+            direction: bet.prediction === 'GOLD' || bet.prediction === 'KNIFE' ? 'LONG' : 'SHORT',
+            entryPrice,
+            markPrice,
+            pnl,
+            pnlPercent,
+            status: bet.payout === null ? 'Open' : 'Closed',
+            leverage: '1x',
+          } satisfies PositionRow;
+        });
+        setPositions(mapped);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setPositions([]);
+      })
+      .finally(() => {
+        if (!mounted) return;
+        setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <div className="card-elevated p-4 sm:p-6 overflow-x-auto">
       <h2 className="text-lg sm:text-xl font-bold mb-4">持仓 (Positions)</h2>
+      {loading && <p className="text-xs text-gray-500 mb-3">加载中...</p>}
+      {!loading && positions.length === 0 && (
+        <p className="text-xs text-gray-500 mb-3">暂无真实持仓数据</p>
+      )}
 
       {/* Desktop table */}
       <div className="hidden sm:block overflow-x-auto">
@@ -38,7 +115,7 @@ export function PositionsTable() {
             </tr>
           </thead>
           <tbody>
-            {POSITIONS.map((position) => (
+            {positions.map((position) => (
               <tr
                 key={position.id}
                 className="border-b border-border-subtle/50 hover:bg-bg-tertiary/30 transition-colors"
@@ -97,7 +174,7 @@ export function PositionsTable() {
 
       {/* Mobile cards */}
       <div className="sm:hidden space-y-3">
-        {POSITIONS.map((position) => (
+        {positions.map((position) => (
           <div
             key={position.id}
             className="border border-border-subtle rounded-lg p-4 space-y-2"

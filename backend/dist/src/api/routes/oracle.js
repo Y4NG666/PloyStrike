@@ -9,8 +9,7 @@ router.get("/status", async (_req, res) => {
     res.json({
         lastPriceUpdate: latest?.timestamp ?? null,
         relayerConfigured: Boolean(env.oraclePrivateKey && env.oracleRpcUrl),
-        adapterConfigured: Boolean(env.oracleAdapterAddress),
-        bettingRouterConfigured: Boolean(env.oracleBettingRouterAddress)
+        adapterConfigured: Boolean(env.oracleAdapterAddress)
     });
 });
 export default router;

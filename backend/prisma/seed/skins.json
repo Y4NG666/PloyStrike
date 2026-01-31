@@ -10,5 +10,35 @@
     "marketHashName": "AWP | Asiimov (Battle-Scarred)",
     "buffGoodsId": 34022,
     "iconUrl": ""
+  },
+  {
+    "id": "M4A4-Howl-ST",
+    "marketHashName": "M4A4 | Howl (StatTrak)",
+    "buffGoodsId": null,
+    "iconUrl": ""
+  },
+  {
+    "id": "Karambit-Doppler-Sapphire",
+    "marketHashName": "Karambit | Doppler (Sapphire)",
+    "buffGoodsId": null,
+    "iconUrl": ""
+  },
+  {
+    "id": "DesertEagle-Blaze",
+    "marketHashName": "Desert Eagle | Blaze",
+    "buffGoodsId": null,
+    "iconUrl": ""
+  },
+  {
+    "id": "Butterfly-Knife-Fade",
+    "marketHashName": "Butterfly Knife | Fade",
+    "buffGoodsId": null,
+    "iconUrl": ""
+  },
+  {
+    "id": "Glock-18-Fade",
+    "marketHashName": "Glock-18 | Fade",
+    "buffGoodsId": null,
+    "iconUrl": ""
   }
 ]

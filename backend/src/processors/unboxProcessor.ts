@@ -136,7 +136,7 @@ export async function claimUnboxRefund(
   if (refundable.length === 0) {
     return { sessionId, userAddress, refunded: 0 };
   }
-  const updates = refundable.map((bet) =>
+  const updates: Prisma.PrismaPromise<unknown>[] = refundable.map((bet) =>
     prisma.unboxBet.update({
       where: { id: bet.id },
       data: { payout: bet.amount }

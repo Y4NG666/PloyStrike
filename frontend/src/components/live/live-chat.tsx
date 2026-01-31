@@ -2,39 +2,91 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LIVE_BETS } from '@/lib/mock-data';
+import { fetchJson } from '@/lib/api';
 import { Copy, TrendingUp, Trophy } from 'lucide-react';
 
+type LiveBet = {
+  id: number;
+  user: string;
+  action: string;
+  amount: string;
+  result: string;
+  timestamp: string;
+  highlight?: boolean;
+};
+
 export function LiveChat() {
-  const [messages, setMessages] = useState<typeof LIVE_BETS>([]);
+  const [messages, setMessages] = useState<LiveBet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(0);
 
   useEffect(() => {
-    setMessages(LIVE_BETS);
-
-    // Simulate new messages every 3-5 seconds
-    const interval = setInterval(() => {
-      const newBets = [
-        {
-          id: Date.now(),
-          user: `0x${Math.random().toString(16).slice(2, 8)}...${Math.random()
-            .toString(16)
-            .slice(2, 6)}`,
-          action: ['Bet Call', 'Bet Put', 'Open Case'][
-            Math.floor(Math.random() * 3)
-          ],
-          amount: `${Math.floor(Math.random() * 1000) + 50} MATIC`,
-          result:
-            Math.random() > 0.7 ? 'Win (Gold)' : 'Pending',
-          timestamp: 'now',
-          highlight: Math.random() > 0.8,
-        },
-      ];
-
-      setMessages((prev) => [...newBets, ...prev].slice(0, 10));
-    }, 4000);
-
-    return () => clearInterval(interval);
+    let mounted = true;
+    fetchJson<{ id: number }[]>('/api/unbox/sessions')
+      .then((sessions) => {
+        if (!mounted) return null;
+        const latest = sessions[0];
+        if (!latest) return null;
+        return fetchJson<{
+          id: number;
+          bets: { id: number; userAddress: string; amount: number; payout: number | null; createdAt: string }[];
+        }>(`/api/unbox/sessions/${latest.id}`);
+      })
+      .then((session) => {
+        if (!mounted) return;
+        const bets = (session?.bets ?? []).slice().sort((a, b) => {
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        });
+        const mapped = bets.slice(0, 12).map((bet) => {
+          const shortAddress = `${bet.userAddress.slice(0, 4)}...${bet.userAddress.slice(-4)}`;
+          const result =
+            bet.payout === null
+              ? 'Pending'
+              : bet.payout > bet.amount
+              ? 'Win'
+              : bet.payout === bet.amount
+              ? 'Refund'
+              : 'Loss';
+          return {
+            id: bet.id,
+            user: shortAddress,
+            action: 'Open Case',
+            amount: `${bet.amount} MATIC`,
+            result,
+            timestamp: new Date(bet.createdAt).toLocaleTimeString(),
+            highlight: bet.payout !== null && bet.payout > bet.amount,
+          };
+        });
+        setMessages(mapped);
+        setVisibleCount(0);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setMessages([]);
+      })
+      .finally(() => {
+        if (!mounted) return;
+        setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const timer = window.setInterval(() => {
+      setVisibleCount((prev) => {
+        if (prev >= messages.length) {
+          return 1;
+        }
+        return prev + 1;
+      });
+    }, 1500);
+    return () => window.clearInterval(timer);
+  }, [messages]);
+
+  const visibleMessages = messages.slice(0, visibleCount);
 
   const getResultColor = (result: string) => {
     if (result.includes('Win')) return 'text-profit';
@@ -56,14 +108,21 @@ export function LiveChat() {
           🔴 Live Activity
         </h2>
         <p className="text-xs text-gray-500 mt-1">
-          Viewing {messages.length} recent transactions
+          {loading
+            ? '加载中...'
+            : messages.length === 0
+            ? '暂无实时数据'
+            : `流动中 · ${visibleMessages.length}/${messages.length}`}
         </p>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-2">
+        {!loading && messages.length === 0 && (
+          <p className="text-xs text-gray-500">暂无实时数据</p>
+        )}
         <AnimatePresence mode="popLayout" initial={false}>
-          {messages.map((bet) => (
+          {visibleMessages.map((bet) => (
             <motion.div
               key={bet.id}
               initial={{ opacity: 0, x: 20 }}

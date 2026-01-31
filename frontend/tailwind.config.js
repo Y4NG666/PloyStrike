@@ -39,6 +39,10 @@ module.exports = {
         'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
         'shimmer': 'shimmer 2s linear infinite',
+        'ticker': 'ticker 20s linear infinite',
+        'flash-up': 'flash-up 0.7s ease-out',
+        'flash-down': 'flash-down 0.7s ease-out',
+        'market-flow': 'market-flow 2.5s linear infinite',
       },
       keyframes: {
         'pulse-glow': {
@@ -52,6 +56,22 @@ module.exports = {
         'shimmer': {
           '0%': { backgroundPosition: '-1000px 0' },
           '100%': { backgroundPosition: '1000px 0' },
+        },
+        'ticker': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'flash-up': {
+          '0%': { color: '#10B981' },
+          '100%': { color: 'inherit' },
+        },
+        'flash-down': {
+          '0%': { color: '#F43F5E' },
+          '100%': { color: 'inherit' },
+        },
+        'market-flow': {
+          '0%': { strokeDashoffset: '12' },
+          '100%': { strokeDashoffset: '0' },
         },
       },
       backdropBlur: {

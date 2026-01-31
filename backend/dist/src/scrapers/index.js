@@ -2,9 +2,7 @@ import { prisma } from "../database/client.js";
 import { env } from "../config/env.js";
 import { fetchBuffPrice } from "./buff163.js";
 import { fetchSteamPrice } from "./steam.js";
-import { fetchHltvMatch } from "./hltv.js";
 import { processPriceSamples } from "../processors/priceProcessor.js";
-import { processMatchSamples } from "../processors/matchProcessor.js";
 async function scrapePrices() {
     const skins = await prisma.skin.findMany();
     const samples = [];
@@ -18,21 +16,8 @@ async function scrapePrices() {
     }
     await processPriceSamples(samples);
 }
-async function scrapeMatches() {
-    const matches = await prisma.match.findMany({
-        where: { status: { not: "FINISHED" } }
-    });
-    const samples = [];
-    for (const match of matches) {
-        const sample = await fetchHltvMatch(match.matchId);
-        if (sample)
-            samples.push(sample);
-    }
-    await processMatchSamples(samples);
-}
 async function runOnce() {
     await scrapePrices();
-    await scrapeMatches();
 }
 async function main() {
     await runOnce();

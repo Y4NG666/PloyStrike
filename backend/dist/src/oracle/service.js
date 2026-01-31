@@ -5,7 +5,6 @@ import { withinDiff, withinSwing } from "./validator.js";
 import { OracleRelayer } from "./relayer.js";
 const pending = new Map();
 const lastSent = new Map();
-const resolvedMatches = new Set();
 async function loadVwap(skinId, source) {
     const since = new Date(Date.now() - 60 * 60 * 1000);
     const history = await prisma.priceHistory.findMany({
@@ -67,25 +66,8 @@ async function processPrices(relayer) {
         await relayer.updatePrice(skin.id, price, signature);
     }
 }
-async function processMatches(relayer) {
-    const matches = await prisma.match.findMany({
-        where: { status: "FINISHED", winner: { not: null } }
-    });
-    for (const match of matches) {
-        if (resolvedMatches.has(match.matchId)) {
-            continue;
-        }
-        if (!relayer.isReady()) {
-            console.warn("Relayer not configured, skip resolveMatch");
-            break;
-        }
-        await relayer.resolveMatch(match.matchId, match.winner ?? "");
-        resolvedMatches.add(match.matchId);
-    }
-}
 async function runOnce(relayer) {
     await processPrices(relayer);
-    await processMatches(relayer);
 }
 async function main() {
     const relayer = new OracleRelayer();
